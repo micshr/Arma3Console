@@ -16,38 +16,42 @@ namespace Arma3Console
 
             while (!Console.KeyAvailable)
             {
-                byte[] serverInfoResponse = Request.Send(args[0], 2303, Request.A2S_INFO_REQUEST).Result;
-
-                ServerInfo si = ServerInfo.Parse(serverInfoResponse);
-
-                byte[] challengeInfoResponse = Request.Send(args[0], 2303, Request.A2S_SERVERQUERY_GETCHALLENGE_REQUEST).Result;
-
-                ChallengeInfo ci = ChallengeInfo.Parse(challengeInfoResponse);
-
-                byte[] playerInfoResponse = Request.Send(args[0], 2303, ci.Challenge).Result;
-
-                List<PlayerInfo> players = PlayerInfo.Parse(playerInfoResponse);
-
-                Console.WriteLine(si.ToString());
-
-                foreach (PlayerInfo pi in players)
+                try
                 {
-                    bool has = playersMasterList.Any(p => p.Name == pi.Name);
+                    byte[] serverInfoResponse = Request.Send(args[0], 2303, Request.A2S_INFO_REQUEST).Result;
 
-                    if (!has)
+                    ServerInfo si = ServerInfo.Parse(serverInfoResponse);
+
+                    byte[] challengeInfoResponse = Request.Send(args[0], 2303, Request.A2S_SERVERQUERY_GETCHALLENGE_REQUEST).Result;
+
+                    ChallengeInfo ci = ChallengeInfo.Parse(challengeInfoResponse);
+
+                    byte[] playerInfoResponse = Request.Send(args[0], 2303, ci.Challenge).Result;
+
+                    List<PlayerInfo> players = PlayerInfo.Parse(playerInfoResponse);
+
+                    Console.WriteLine(si.ToString());
+
+                    foreach (PlayerInfo pi in players)
                     {
-                        // new player play sound.
-                        Console.Beep();
+                        bool has = playersMasterList.Any(p => p.Name == pi.Name);
+
+                        if (!has)
+                        {
+                            // new player play sound.
+                            Console.Beep();
+                        }
+                        Console.WriteLine(pi.ToString());
                     }
-                    Console.WriteLine(pi.ToString());
-                }
 
-                playersMasterList.Clear();
+                    playersMasterList.Clear();
 
-                foreach (PlayerInfo pi in players)
-                {
-                    playersMasterList.Add(pi);
+                    foreach (PlayerInfo pi in players)
+                    {
+                        playersMasterList.Add(pi);
+                    }
                 }
+                catch (Exception) { }
 
                 Thread.Sleep(10000);
 
