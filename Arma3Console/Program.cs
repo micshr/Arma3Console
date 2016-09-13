@@ -53,7 +53,7 @@ namespace Arma3Console
                 }
                 catch (Exception) { }
 
-                Thread.Sleep(10000);
+                Thread.Sleep(60000);
 
                 Console.Clear();
             }

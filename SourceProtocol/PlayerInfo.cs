@@ -9,12 +9,15 @@ namespace SourceProtocol
     public class PlayerInfo
     {
         public string Name { get; private set; }
-        //public Int32 Score { get; private set; }
-        //public Int32 Score { get; private set; }
+        public Int32 Score { get; private set; }
+        public float Playtime { get; private set; }
 
         public override string ToString()
         {
-            return "Name: " + Name;
+            TimeSpan duration = new TimeSpan(0, 0, (int)Playtime);
+            return "Name: " + Name + "\n" +
+                "Score:" + Score + "\n" +
+                "Playtime:" + duration.Hours + "h:"+duration.Minutes +"min:" + duration.Seconds+"s";
         }
 
         public static List<PlayerInfo> Parse(byte[] playerInfo)
@@ -31,7 +34,8 @@ namespace SourceProtocol
                 sbr.ReadByte();
                 var pi = new PlayerInfo();
                 pi.Name = sbr.ReadString();
-                sbr.ReadBytes(8);
+                pi.Score = sbr.ReadInt32();
+                pi.Playtime = sbr.ReadFloat();
                 players.Add(pi);
             }
 

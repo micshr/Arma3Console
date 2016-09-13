@@ -14,9 +14,30 @@ namespace SourceProtocol
         {
             _data = data;
         }
+
         public byte ReadByte()
         {
             return _data[pos++];
+        }
+
+        public float ReadFloat()
+        {
+            float ret = System.BitConverter.ToSingle(_data, pos);
+            pos += 4;
+
+            return ret;
+        }
+
+        public Int32 ReadInt32()
+        {
+            Int32 ret = 0;
+
+            ret = (Int32)_data[pos++];
+            ret |= (Int32)_data[pos++] << 8;
+            ret |= (Int32)_data[pos++] << 16;
+            ret |= (Int32)_data[pos++] << 24;
+
+            return ret;
         }
 
         public byte[] ReadBytes(int count)
